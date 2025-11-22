@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CrimeReport } from '../entities/crime-report.entity';
+import { CrimeReport } from './entities/crime-report.entity';
 import { CreateCrimeReportDto } from './dtos/create-crime-report.dto';
 import { CrimeType } from '../enums/crime-type.enum';
 import { mapToCrimeReportResponse, CrimeReportResponse } from './dtos/crime-report-response.dto';

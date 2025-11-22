@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import * as cheerio from 'cheerio';
 import axios from 'axios';
-import { WantedCriminal } from '../entities/wanted-criminal.entity';
+import { WantedCriminal } from '../wanted-criminals/entities/wanted-criminal.entity';
 
 @Injectable()
 export class ScraperService {

@@ -5,7 +5,7 @@ import { ScraperCronService } from './scraper-cron.service';
 import { AuthModule } from '../auth/auth.module';
 import { WantedCriminalsModule } from '../wanted-criminals/wanted-criminals.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from '../entities/user.entity';
+import { User } from '../users/entities/user.entity';
 
 @Module({
     imports: [

@@ -1,4 +1,4 @@
-import { CrimeReport } from '../../entities/crime-report.entity';
+import { CrimeReport } from '../entities/crime-report.entity';
 
 export interface CrimeReportResponse {
     id: string;
@@ -22,7 +22,7 @@ export interface CrimeReportResponse {
 
 export function mapToCrimeReportResponse(report: CrimeReport): CrimeReportResponse {
     let severityLevel: 'low' | 'medium' | 'high' = 'low';
-    
+
     if (report.severity >= 5) severityLevel = 'high';
     else if (report.severity >= 3) severityLevel = 'medium';
 
