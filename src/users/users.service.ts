@@ -1,7 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '../entities/user.entity';
+import { User } from './entities/user.entity';
+import { CreateUserDto } from './dtos/create-user.dto';
+import { UpdateUserDto } from './dtos/update-user.dto';
+import * as bcrypt from 'bcrypt';
+import { Role } from '../auth/enums/role.enum';
 
 @Injectable()
 export class UsersService {
@@ -16,5 +20,83 @@ export class UsersService {
 
     async findUserById(id: string): Promise<User | null> {
         return this.userRepository.findOne({ where: { id } });
+    }
+
+    async create(createDto: CreateUserDto): Promise<Omit<User, 'password'>> {
+        // Check if email is already in use
+        const existingUser = await this.findUserByEmail(createDto.email);
+        if (existingUser) {
+            throw new BadRequestException('Email already in use');
+        }
+
+        // Hash password
+        const hashedPassword = await bcrypt.hash(createDto.password, 10);
+
+        // Create user
+        const user = this.userRepository.create({
+            name: createDto.name,
+            email: createDto.email,
+            password: hashedPassword,
+            role: createDto.role || Role.User,
+        });
+
+        await this.userRepository.save(user);
+
+        // Return user without password by selecting specific fields
+        return this.findOne(user.id);
+    }
+
+    async findAll(): Promise<Omit<User, 'password'>[]> {
+        return this.userRepository.find({
+            select: ['id', 'name', 'email', 'role'],
+            order: { name: 'ASC' },
+        });
+    }
+
+    async findOne(id: string): Promise<Omit<User, 'password'>> {
+        const user = await this.userRepository.findOne({
+            where: { id },
+            select: ['id', 'name', 'email', 'role'],
+        });
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+        return user;
+    }
+
+    async update(id: string, updateDto: UpdateUserDto): Promise<Omit<User, 'password'>> {
+        // Check if user exists
+        const existingUser = await this.userRepository.findOne({
+            where: { id },
+            select: ['id', 'email', 'name', 'role'] // Chỉ cần các fields này để check
+        });
+        if (!existingUser) {
+            throw new NotFoundException('User not found');
+        }
+
+        // Check if email is being changed and if it's already in use
+        if (updateDto.email && updateDto.email !== existingUser.email) {
+            const emailInUse = await this.findUserByEmail(updateDto.email);
+            if (emailInUse) {
+                throw new BadRequestException('Email already in use');
+            }
+        }
+
+        // Update user fields (TypeORM sẽ chỉ update các fields được cung cấp)
+        await this.userRepository.update(id, updateDto);
+
+        // Return updated user without password
+        return this.findOne(id);
+    }
+
+    async remove(id: string): Promise<void> {
+        // Check if user exists
+        const user = await this.userRepository.findOne({ where: { id } });
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+        // Delete by ID (không cần entity đầy đủ)
+        await this.userRepository.delete(id);
     }
 }
