@@ -1,0 +1,125 @@
+### 1. Signup User
+POST http://localhost:3001/api/auth/signup
+Content-Type: application/json
+
+{
+  "name": "Nguyễn Văn A",
+  "email": "user1@example.com",
+  "password": "password123"
+}
+
+### 2. Login
+POST http://localhost:3001/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "user1@example.com",
+  "password": "password123"
+}
+
+### 3. Create Crime Report - Cướp giật (ĐẦY ĐỦ - Copy accessToken từ login response vào đây)
+POST http://localhost:3001/api/crime-reports
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiYzYyYTQ5YS1hMDI3LTQwNzEtYjhkYi1jN2Y1MjgyNTllMDAiLCJpYXQiOjE3NjM3MDgwNjAsImV4cCI6MTc2Mzc0NDA2MH0.Pgtfnzje2tqr5jFSInP4BuzTT8fqW82l5W8P-EEnBEg
+Content-Type: application/json
+
+{
+  "title": "Cướp giật tại chợ Bến Thành",
+  "description": "Bị cướp giật điện thoại lúc 20h tối khi đi bộ về nhà. Phạm nhân đi xe máy, mặc áo trắng, đội mũ bảo hiểm che mặt",
+  "type": "cuop_giat",
+  "lat": 10.7769,
+  "lng": 106.7009,
+  "address": "Chợ Bến Thành, Quận 1, TP.HCM",
+  "areaCode": "700000",
+  "province": "Hồ Chí Minh",
+  "district": "Quận 1",
+  "ward": "Phường Bến Nghé",
+  "street": "Lê Lợi",
+  "source": "user",
+  "attachments": [
+    "https://example.com/image1.jpg",
+    "https://example.com/image2.jpg"
+  ],
+  "reportedAt": "2025-02-11T12:00:00Z"
+}
+
+### 3b. Create Crime Report - Giết người
+POST http://localhost:3001/api/crime-reports
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "title": "Giết người tại công viên",
+  "description": "Phát hiện thi thể tại công viên Lê Văn Tám",
+  "type": "giet_nguoi",
+  "lat": 10.7831,
+  "lng": 106.7050,
+  "address": "Công viên Lê Văn Tám, Quận 1",
+  "province": "Hồ Chí Minh",
+  "district": "Quận 1"
+}
+
+### 3c. Create Crime Report - Trộm cắp
+POST http://localhost:3001/api/crime-reports
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "title": "Trộm xe máy tại Bến Nghé",
+  "description": "Xe máy bị mất khi để trước cửa quán cà phê",
+  "type": "trom_cap",
+  "lat": 10.7870,
+  "lng": 106.6900,
+  "address": "Phường Bến Nghé, Quận 1",
+  "province": "Hồ Chí Minh",
+  "district": "Quận 1",
+  "ward": "Phường Bến Nghé"
+}
+
+### 3d. Create Crime Report - Truy nã
+POST http://localhost:3001/api/crime-reports
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "title": "Đối tượng truy nã xuất hiện",
+  "description": "Phát hiện đối tượng truy nã tại phố đi bộ Nguyễn Huệ",
+  "type": "truy_na",
+  "lat": 10.7780,
+  "lng": 106.7050,
+  "address": "Phố đi bộ Nguyễn Huệ, Quận 1",
+  "province": "Hồ Chí Minh",
+  "district": "Quận 1"
+}
+
+### 4. Get All Crime Reports
+GET http://localhost:3001/api/crime-reports
+
+### 5. Get Nearby Alerts
+GET http://localhost:3001/api/crime-reports/nearby?lat=10.7769&lng=106.7009&radius=5
+
+### 6. Get Heatmap Data
+GET http://localhost:3001/api/crime-reports/heatmap
+
+### 7. Get Statistics
+GET http://localhost:3001/api/crime-reports/statistics
+
+### 8. Get Wanted Criminals
+GET http://localhost:3001/api/wanted-criminals
+
+### 9. Get Home Page Data (WANTED CRIMINALS ONLY - Raw data from Bộ Công An)
+GET http://localhost:3001/api/home
+
+### Note: Crime Reports API for Map Display:
+# - Get All: GET /crime-reports
+# - Get Heatmap: GET /crime-reports/heatmap
+# - Get Nearby: GET /crime-reports/nearby?lat=...&lng=...&radius=...
+# - Get Statistics: GET /crime-reports/statistics
+
+### 10. Scrape Wanted Criminals from Bộ Công An (ADMIN ONLY)
+### Lưu ý: Cần login với tài khoản admin, copy accessToken vào đây
+POST http://localhost:3001/api/scraper/wanted-criminals?pages=5
+Authorization: Bearer YOUR_ADMIN_ACCESS_TOKEN_HERE
+Content-Type: application/json
+
+### 11. Get Scraper Cron Status
+GET http://localhost:3001/api/scraper/status
