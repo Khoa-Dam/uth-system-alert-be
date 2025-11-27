@@ -7,10 +7,10 @@ export class CreateWantedCriminalDto {
     @IsNotEmpty()
     name: string; // Họ tên đối tượng
 
-    @ApiPropertyOptional({ description: 'Year of birth', example: 1990 })
+    @ApiProperty({ description: 'Year of birth', example: 1990 })
     @IsNumber()
-    @IsOptional()
-    birthYear?: number; // Năm sinh
+    @IsNotEmpty()
+    birthYear: number; // Năm sinh
 
     @ApiPropertyOptional({ description: 'Registered permanent address (Nơi ĐKTT)', example: 'Hanoi, Vietnam' })
     @IsString()

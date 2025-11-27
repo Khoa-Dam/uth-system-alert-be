@@ -8,7 +8,7 @@ export class WantedCriminal {
     @Column()
     name: string; // Họ tên đối tượng
 
-    @Column({ nullable: true })
+    @Column()
     birthYear: number; // Năm sinh
 
     @Column({ nullable: true })
