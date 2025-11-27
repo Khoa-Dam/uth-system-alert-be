@@ -30,20 +30,9 @@ async function bootstrap() {
 
         for (const criminal of criminals) {
             try {
-                // Check if already exists (by name and crime)
-                const existing = await wantedCriminalsService.findAll();
-                const isDuplicate = existing.some(
-                    c => c.name === criminal.name && c.crime === criminal.crime
-                );
-
-                if (!isDuplicate) {
-                    await wantedCriminalsService.create(criminal as any);
-                    imported++;
-                    console.log(`✓ Imported: ${criminal.name}`);
-                } else {
-                    duplicates++;
-                    console.log(`⊘ Skipped duplicate: ${criminal.name}`);
-                }
+                await wantedCriminalsService.createOrUpdate(criminal);
+                imported++;
+                console.log(`✓ Processed: ${criminal.name}`);
             } catch (error) {
                 console.error(`✗ Error importing ${criminal.name}:`, error.message);
             }
@@ -51,9 +40,8 @@ async function bootstrap() {
 
         console.log('\n📊 Summary:');
         console.log(`  Total scraped: ${criminals.length}`);
-        console.log(`  Imported: ${imported}`);
-        console.log(`  Duplicates: ${duplicates}`);
-        console.log(`  Errors: ${criminals.length - imported - duplicates}`);
+        console.log(`  Processed: ${imported}`);
+        console.log(`  Errors: ${criminals.length - imported}`);
 
     } catch (error) {
         console.error('❌ Scraper error:', error.message);

@@ -42,20 +42,9 @@ export class ScraperCronService {
 
             for (const criminal of criminals) {
                 try {
-                    // Check if already exists
-                    const existing = await this.wantedCriminalsService.findAll();
-                    const isDuplicate = existing.some(
-                        c => c.name === criminal.name && c.crime === criminal.crime
-                    );
-
-                    if (!isDuplicate) {
-                        await this.wantedCriminalsService.create(criminal as any);
-                        imported++;
-                        this.logger.log(`✓ Imported: ${criminal.name}`);
-                    } else {
-                        duplicates++;
-                        this.logger.log(`⊘ Skipped duplicate: ${criminal.name}`);
-                    }
+                    await this.wantedCriminalsService.createOrUpdate(criminal);
+                    imported++;
+                    this.logger.log(`✓ Processed: ${criminal.name}`);
                 } catch (error) {
                     this.logger.error(`✗ Error importing ${criminal.name}:`, error.message);
                 }
@@ -63,9 +52,8 @@ export class ScraperCronService {
 
             this.logger.log('\n📊 Daily Scraping Summary:');
             this.logger.log(`  Total scraped: ${criminals.length}`);
-            this.logger.log(`  Imported: ${imported}`);
-            this.logger.log(`  Duplicates: ${duplicates}`);
-            this.logger.log(`  Errors: ${criminals.length - imported - duplicates}`);
+            this.logger.log(`  Processed: ${imported}`);
+            this.logger.log(`  Errors: ${criminals.length - imported}`);
 
         } catch (error) {
             this.logger.error('❌ Daily scraping job error:', error.message);
@@ -100,21 +88,11 @@ export class ScraperCronService {
 
             // Import to database
             let imported = 0;
-            let duplicates = 0;
 
             for (const criminal of criminals) {
                 try {
-                    const existing = await this.wantedCriminalsService.findAll();
-                    const isDuplicate = existing.some(
-                        c => c.name === criminal.name && c.crime === criminal.crime
-                    );
-
-                    if (!isDuplicate) {
-                        await this.wantedCriminalsService.create(criminal as any);
-                        imported++;
-                    } else {
-                        duplicates++;
-                    }
+                    await this.wantedCriminalsService.createOrUpdate(criminal);
+                    imported++;
                 } catch (error) {
                     this.logger.error(`✗ Error importing ${criminal.name}:`, error.message);
                 }
@@ -122,8 +100,7 @@ export class ScraperCronService {
 
             this.logger.log('\n📊 Weekly Full Scraping Summary:');
             this.logger.log(`  Total scraped: ${criminals.length}`);
-            this.logger.log(`  Imported: ${imported}`);
-            this.logger.log(`  Duplicates: ${duplicates}`);
+            this.logger.log(`  Processed: ${imported}`);
 
         } catch (error) {
             this.logger.error('❌ Weekly full scraping job error:', error.message);

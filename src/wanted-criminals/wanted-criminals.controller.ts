@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Body, Param, UseGuards, Put, Delete } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody, ApiParam } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Param, UseGuards, Put, Delete, Query } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { WantedCriminalsService } from './wanted-criminals.service';
 import { CreateWantedCriminalDto } from './dtos/create-wanted-criminal.dto';
 import { UpdateWantedCriminalDto } from './dtos/update-wanted-criminal.dto';
@@ -14,10 +14,23 @@ export class WantedCriminalsController {
     constructor(private readonly wantedCriminalsService: WantedCriminalsService) { }
 
     @Get()
-    @ApiOperation({ summary: 'Get all wanted criminals' })
-    @ApiResponse({ status: 200, description: 'Returns all wanted criminals' })
-    async findAll() {
-        return this.wantedCriminalsService.findAll();
+    @ApiOperation({ summary: 'Get all wanted criminals (paginated with search & filter)' })
+    @ApiQuery({ name: 'page', required: false, description: 'Page number (default: 1)' })
+    @ApiQuery({ name: 'limit', required: false, description: 'Items per page (default: 9)' })
+    @ApiQuery({ name: 'search', required: false, description: 'Search by name or crime' })
+    @ApiQuery({ name: 'name', required: false, description: 'Filter by name' })
+    @ApiQuery({ name: 'crime', required: false, description: 'Filter by crime' })
+    @ApiResponse({ status: 200, description: 'Returns paginated wanted criminals' })
+    async findAll(
+        @Query('page') page?: string,
+        @Query('limit') limit?: string,
+        @Query('search') search?: string,
+        @Query('name') name?: string,
+        @Query('crime') crime?: string,
+    ) {
+        const pageNumber = page ? parseInt(page, 10) : 1;
+        const limitNumber = limit ? parseInt(limit, 10) : 9;
+        return this.wantedCriminalsService.findAll(pageNumber, limitNumber, search, name, crime);
     }
 
     @Get(':id')

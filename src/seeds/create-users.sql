@@ -55,3 +55,4 @@ WHERE NOT EXISTS (
 -- ============================================
 SELECT id, name, email, role, created_at FROM users WHERE email IN ('admin@crime-alert.com', 'user@crime-alert.com');
 
+

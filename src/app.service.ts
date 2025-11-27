@@ -12,22 +12,22 @@ export class AppService {
   }
 
   async getHomePageData() {
-    const [wantedCriminals, wantedStatistics] = await Promise.all([
-      this.wantedCriminalsService.findAll().then(criminals => criminals.slice(0, 6)),
+    const [wantedCriminalsResult, wantedStatistics] = await Promise.all([
+      this.wantedCriminalsService.findAll(1, 6),
       this.getWantedCriminalsStatistics(),
     ]);
 
     return {
-      recentWantedCriminals: wantedCriminals,
+      recentWantedCriminals: wantedCriminalsResult.data,
       statistics: wantedStatistics,
     };
   }
 
   private async getWantedCriminalsStatistics() {
-    const allWanted = await this.wantedCriminalsService.findAll();
+    const allWantedResult = await this.wantedCriminalsService.findAll(1, 1);
 
     return {
-      totalWanted: allWanted.length,
+      totalWanted: allWantedResult.total,
     };
   }
 }

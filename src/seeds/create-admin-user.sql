@@ -42,3 +42,4 @@ ON CONFLICT (email) DO NOTHING;
 -- You need to generate the actual hash using bcrypt before running this script.
 -- See instructions at the top of this file.
 
+

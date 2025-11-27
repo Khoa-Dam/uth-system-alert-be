@@ -261,3 +261,9 @@ Authorization: Bearer YOUR_ADMIN_ACCESS_TOKEN_HERE
 ### 23. Admin - Verify Crime Report (ADMIN ONLY)
 PUT http://localhost:3001/api/crime-reports/YOUR_CRIME_REPORT_ID_HERE/verify
 Authorization: Bearer YOUR_ADMIN_ACCESS_TOKEN_HERE
+
+### 24. Scrape Wanted Criminals with Limit (ADMIN ONLY)
+### Test limit=1 to fetch only 1 item
+POST http://localhost:3001/api/scraper/wanted-criminals?limit=1&pages=1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJmMmY4MDMwZi0wOGFhLTQ3Y2ItOWFhYy1hMTViZTgyM2JjNDciLCJpYXQiOjE3NjQyMzE4MTgsImV4cCI6MTc2NDI2NzgxOH0.ZbgPjvQLWTPWyT8-lHHPsTAnJksJVz85_Wfo0nqezG4
+Content-Type: application/json
