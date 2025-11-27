@@ -51,9 +51,9 @@ import configuration from './config/config';
           entities: [User, RefreshToken, CrimeReport, ReportVote, WantedCriminal, WeatherNews],
           synchronize: true,
           ssl: false,
-          extra: (process.env.NODE_ENV === 'production' || process.env.DB_SSL === 'true')
-            ? { ssl: { rejectUnauthorized: false } }
-            : undefined,
+          // extra: (process.env.NODE_ENV === 'production' || process.env.DB_SSL === 'true')
+          //   ? { ssl: { rejectUnauthorized: false } }
+          //   : undefined,
         };
       },
     }),
